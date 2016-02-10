@@ -1,16 +1,21 @@
-// Copyright 2014 The Chromium Authors. All rights reserved.
+// Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef WebCompositorAnimationCurve_h
-#define WebCompositorAnimationCurve_h
+#ifndef CompositorAnimationCurve_h
+#define CompositorAnimationCurve_h
+
+#include "base/memory/scoped_ptr.h"
+#include "platform/PlatformExport.h"
+
+namespace cc {
+class TimingFunction;
+}
 
 namespace blink {
 
-class WebCompositorAnimationCurve {
+class PLATFORM_EXPORT CompositorAnimationCurve {
 public:
-    virtual ~WebCompositorAnimationCurve() { }
-
     enum TimingFunctionType {
         TimingFunctionTypeEase,
         TimingFunctionTypeEaseIn,
@@ -26,9 +31,14 @@ public:
         AnimationCurveTypeTransform,
     };
 
+    virtual ~CompositorAnimationCurve() {}
+
     virtual AnimationCurveType type() const = 0;
+
+protected:
+    static scoped_ptr<cc::TimingFunction> createTimingFunction(TimingFunctionType);
 };
 
 } // namespace blink
 
-#endif // WebCompositorAnimationCurve_h
+#endif // CompositorAnimationCurve_h
