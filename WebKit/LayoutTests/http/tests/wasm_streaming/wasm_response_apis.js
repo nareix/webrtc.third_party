@@ -2,16 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+const incrementer_url = '../wasm/incrementer.wasm';
 
 function TestStreamedCompile() {
-  return fetch('incrementer.wasm')
+  return fetch(incrementer_url)
     .then(WebAssembly.compile)
     .then(m => new WebAssembly.Instance(m))
     .then(i => assert_equals(5, i.exports.increment(4)));
 }
 
 function TestShortFormStreamedCompile() {
-  return WebAssembly.compile(fetch('incrementer.wasm'))
+  return WebAssembly.compile(fetch(incrementer_url))
     .then(m => new WebAssembly.Instance(m))
     .then(i => assert_equals(5, i.exports.increment(4)));
 }
@@ -29,7 +30,7 @@ function BlankResponse() {
 }
 
 function FromArrayBuffer() {
-  return fetch('incrementer.wasm')
+  return fetch(incrementer_url)
     .then(r => r.arrayBuffer())
     .then(arr => new Response(arr))
     .then(WebAssembly.compile)
