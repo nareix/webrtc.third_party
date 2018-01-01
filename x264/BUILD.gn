@@ -1,0 +1,8 @@
+config("x264_config") {
+    include_dirs = [ "inst/include" ]
+}
+
+source_set("x264") {
+    libs = [ "inst/lib/libx264.a" ]
+    public_configs = [ ":x264_config" ]
+}

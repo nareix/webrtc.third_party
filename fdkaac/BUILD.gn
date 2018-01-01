@@ -1,0 +1,8 @@
+config("fdkaac_config") {
+    include_dirs = [ "inst/include" ]
+}
+
+source_set("fdkaac") {
+    libs = [ "inst/lib/libfdk-aac.a" ]
+    public_configs = [ ":fdkaac_config" ]
+}
