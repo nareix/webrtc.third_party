@@ -1,0 +1,9 @@
+config("libuv_config") {
+  include_dirs = [ "inst/include" ]
+}
+
+source_set("libuv") {
+  public_configs = [ ":libuv_config" ]
+  libs = [ "inst/lib/libuv.a" ]
+}
+
