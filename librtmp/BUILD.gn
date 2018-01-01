@@ -1,0 +1,25 @@
+config("librtmp_config") {
+  include_dirs = [ "." ]
+}
+
+static_library("librtmp") {
+  sources = [
+    "amf.c",
+    "amf.h",
+    "bytes.h",
+    "dh.h",
+    "dhgroups.h",
+    "handshake.h",
+    "hashswf.c",
+    "http.h",
+    "log.c",
+    "log.h",
+    "parseurl.c",
+    "rtmp_sys.h",
+    "rtmp.c",
+    "rtmp.h",
+  ]
+  cflags = [ "-Wno-deprecated-declarations" ]
+  libs = [ "z", "crypto", "ssl" ]
+  public_configs = [ ":librtmp_config" ]
+}
