@@ -2882,7 +2882,7 @@ SAVC(_error);
 SAVC(close);
 SAVC(code);
 SAVC(level);
-SAVC(description);
+//SAVC(description);
 SAVC(onStatus);
 SAVC(playlist_ready);
 static const AVal av_NetStream_Failed = AVC("NetStream.Failed");

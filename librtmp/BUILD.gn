@@ -19,6 +19,7 @@ static_library("librtmp") {
     "rtmp.c",
     "rtmp.h",
   ]
+  defines = [ "NO_CRYPTO" ]
   cflags = [ "-Wno-deprecated-declarations" ]
   libs = [ "z", "crypto", "ssl" ]
   public_configs = [ ":librtmp_config" ]
