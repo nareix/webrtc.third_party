@@ -1541,6 +1541,7 @@ WriteN(RTMP *r, const char *buffer, int n)
       if (nBytes == 0)
 	break;
 
+      r->bytesSent += nBytes;
       n -= nBytes;
       ptr += nBytes;
     }

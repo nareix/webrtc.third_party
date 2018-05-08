@@ -1,8 +1,10 @@
 config("librtmp_config") {
   include_dirs = [ "." ]
+  defines = [ "NO_CRYPTO" ]
+  cflags = [ "-Wno-deprecated-declarations" ]
 }
 
-static_library("librtmp") {
+source_set("librtmp") {
   sources = [
     "amf.c",
     "amf.h",
@@ -19,8 +21,6 @@ static_library("librtmp") {
     "rtmp.c",
     "rtmp.h",
   ]
-  defines = [ "NO_CRYPTO" ]
-  cflags = [ "-Wno-deprecated-declarations" ]
   libs = [ "z" ]
   public_configs = [ ":librtmp_config" ]
 }
