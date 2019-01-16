@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include "rtmp_sys.h"
 #include "log.h"
