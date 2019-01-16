@@ -282,6 +282,7 @@ extern "C"
     RTMP_LNK Link;
 
     int bytesSent;
+    const char *reqid;
   } RTMP;
 
   int RTMP_ParseURL(const char *url, int *protocol, AVal *host,

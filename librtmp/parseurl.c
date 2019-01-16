@@ -35,7 +35,7 @@ int RTMP_ParseURL(const char *url, int *protocol, AVal *host, unsigned int *port
 {
 	char *p, *end, *col, *ques, *slash;
 
-	RTMP_Log(RTMP_LOGDEBUG, "Parsing...");
+	RTMP_Log(NULL, RTMP_LOGDEBUG, "Parsing...");
 
 	*protocol = RTMP_PROTOCOL_RTMP;
 	*port = 0;
@@ -49,7 +49,7 @@ int RTMP_ParseURL(const char *url, int *protocol, AVal *host, unsigned int *port
 	/* look for usual :// pattern */
 	p = strstr(url, "://");
 	if(!p) {
-		RTMP_Log(RTMP_LOGERROR, "RTMP URL: No :// in url!");
+		RTMP_Log(NULL, RTMP_LOGERROR, "RTMP URL: No :// in url!");
 		return FALSE;
 	}
 	{
@@ -70,12 +70,12 @@ int RTMP_ParseURL(const char *url, int *protocol, AVal *host, unsigned int *port
 	else if(len == 6 && strncasecmp(url, "rtmpts", 6)==0)
 	        *protocol = RTMP_PROTOCOL_RTMPTS;
 	else {
-		RTMP_Log(RTMP_LOGWARNING, "Unknown protocol!\n");
+		RTMP_Log(NULL, RTMP_LOGWARNING, "Unknown protocol!\n");
 		goto parsehost;
 	}
 	}
 
-	RTMP_Log(RTMP_LOGDEBUG, "Parsed protocol: %d", *protocol);
+	RTMP_Log(NULL, RTMP_LOGDEBUG, "Parsed protocol: %d", *protocol);
 
 parsehost:
 	/* let's get the hostname */
@@ -83,7 +83,7 @@ parsehost:
 
 	/* check for sudden death */
 	if(*p==0) {
-		RTMP_Log(RTMP_LOGWARNING, "No hostname in URL!");
+		RTMP_Log(NULL, RTMP_LOGWARNING, "No hostname in URL!");
 		return FALSE;
 	}
 
@@ -104,9 +104,9 @@ parsehost:
 	if(hostlen < 256) {
 		host->av_val = p;
 		host->av_len = hostlen;
-		RTMP_Log(RTMP_LOGDEBUG, "Parsed host    : %.*s", hostlen, host->av_val);
+		RTMP_Log(NULL, RTMP_LOGDEBUG, "Parsed host    : %.*s", hostlen, host->av_val);
 	} else {
-		RTMP_Log(RTMP_LOGWARNING, "Hostname exceeds 255 characters!");
+		RTMP_Log(NULL, RTMP_LOGWARNING, "Hostname exceeds 255 characters!");
 	}
 
 	p+=hostlen;
@@ -118,14 +118,14 @@ parsehost:
 		p++;
 		p2 = atoi(p);
 		if(p2 > 65535) {
-			RTMP_Log(RTMP_LOGWARNING, "Invalid port number!");
+			RTMP_Log(NULL, RTMP_LOGWARNING, "Invalid port number!");
 		} else {
 			*port = p2;
 		}
 	}
 
 	if(!slash) {
-		RTMP_Log(RTMP_LOGWARNING, "No application or playpath in URL!");
+		RTMP_Log(NULL, RTMP_LOGWARNING, "No application or playpath in URL!");
 		return TRUE;
 	}
 	p = slash+1;
@@ -170,7 +170,7 @@ parsehost:
 
 	app->av_val = p;
 	app->av_len = applen;
-	RTMP_Log(RTMP_LOGDEBUG, "Parsed app     : %.*s", applen, p);
+	RTMP_Log(NULL, RTMP_LOGDEBUG, "Parsed app     : %.*s", applen, p);
 
 	p += appnamelen;
 	}

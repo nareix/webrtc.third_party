@@ -26,6 +26,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <sys/time.h>
 
 #include "rtmp_sys.h"
 #include "log.h"
@@ -40,12 +41,12 @@ static FILE *fmsg;
 
 static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_default;
 
-static const char *levels[] = {
-  "CRIT", "ERROR", "WARNING", "INFO",
-  "DEBUG", "DEBUG2"
-};
+// static const char *levels[] = {
+//   "CRIT", "ERROR", "WARNING", "INFO",
+//   "DEBUG", "DEBUG2"
+// };
 
-static void rtmp_log_default(int level, const char *format, va_list vl)
+static void rtmp_log_default(const char *reqid, int level, const char *format, va_list vl)
 {
 	char str[MAX_PRINT_LEN]="";
 
@@ -55,14 +56,17 @@ static void rtmp_log_default(int level, const char *format, va_list vl)
 	if ( RTMP_debuglevel<RTMP_LOGALL && strstr(str, "no-name" ) != NULL )
 		return;
 
-	if ( !fmsg ) fmsg = stderr;
-
 	if ( level <= (int)RTMP_debuglevel ) {
-		if (neednl) {
-			putc('\n', fmsg);
-			neednl = 0;
-		}
-		fprintf(fmsg, "%s: %s\n", levels[level], str);
+		struct timeval tv;                              
+		char timeFmt[32];                               
+		char reqstr[128] = {};                           
+		if (reqid != NULL) 
+				sprintf(reqstr, "[%s] ", (char *)reqid);         
+		gettimeofday(&tv, NULL);                     
+		strftime(timeFmt, sizeof(timeFmt), "%Y/%m/%d %H:%M:%S", localtime(&tv.tv_sec)); 
+		fprintf(stderr, "%s.%06lu %s%s\n",     
+				timeFmt, (unsigned long)(tv.tv_usec / 1000), reqstr, str); 
+
 #ifdef _DEBUG
 		fflush(fmsg);
 #endif
@@ -89,11 +93,11 @@ RTMP_LogLevel RTMP_LogGetLevel()
 	return RTMP_debuglevel;
 }
 
-void RTMP_Log(int level, const char *format, ...)
+void RTMP_Log(const char *reqid, int level, const char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	cb(level, format, args);
+	cb(reqid, level, format, args);
 	va_end(args);
 }
 
@@ -115,14 +119,14 @@ void RTMP_LogHex(int level, const uint8_t *data, unsigned long len)
 		if ((i & 0x0f) == 0x0f) {
 			*ptr = '\0';
 			ptr = line;
-			RTMP_Log(level, "%s", line);
+			RTMP_Log(NULL, level, "%s", line);
 		} else {
 			*ptr++ = ' ';
 		}
 	}
 	if (i & 0x0f) {
 		*ptr = '\0';
-		RTMP_Log(level, "%s", line);
+		RTMP_Log(NULL, level, "%s", line);
 	}
 }
 
@@ -145,7 +149,7 @@ void RTMP_LogHexString(int level, const uint8_t *data, unsigned long len)
 		unsigned off;
 
 		if( !n ) {
-			if( i ) RTMP_Log( level, "%s", line );
+			if( i ) RTMP_Log(NULL, level, "%s", line );
 			memset( line, ' ', sizeof(line)-2 );
 			line[sizeof(line)-2] = '\0';
 
@@ -171,7 +175,7 @@ void RTMP_LogHexString(int level, const uint8_t *data, unsigned long len)
 		}
 	}
 
-	RTMP_Log( level, "%s", line );
+	RTMP_Log(NULL, level, "%s", line );
 }
 
 /* These should only be used by apps, never by the library itself */
