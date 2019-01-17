@@ -4245,6 +4245,10 @@ CloseInternal(RTMP *r, int reconnect)
       r->Link.rc4keyOut = NULL;
     }
 #endif
+  if (r->reqid) {
+    free(r->reqid);
+    r->reqid = NULL;
+  }
 }
 
 int
