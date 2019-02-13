@@ -122,6 +122,9 @@ static_library("usrsctp") {
       "__Userspace_os_Darwin",
     ]
     cflags += [ "-U__APPLE__" ]
+    if (is_clang){
+      cflags += [ "-Wno-deprecated-declarations"]
+    }
   }
 
   if (is_win) {
